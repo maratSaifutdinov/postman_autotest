@@ -86,8 +86,7 @@ pm.test("Request is made using HTTPS", function () {
     pm.expect(pm.request.url.protocol).to.eql("https");
 });
 
-// GET http://send-request.me/api/companies/ 
-// Получение данных по незащищенному протоколу "http" 
+// GET http://send-request.me/api/companies/ | получение данных по незащищенному протоколу "http" 
 
 
 pm.test("Status code is 301", function () {
@@ -145,6 +144,62 @@ pm.test("Verify status BANKRUPT", function(){
 });
 
 // GET {{baseUrl}}/api/companies?status=1 | invalid query params status = integer
+
+pm.test("Status code is 422", function () {
+    pm.response.to.have.status(422);
+});
+
+pm.test("Status code name has string", () => {
+  pm.response.to.have.status("Unprocessable Entity");
+});
+
+let schema =  {
+  
+  "type": "object",
+  "properties": {
+    "detail": {
+      "type": "array",
+      "items": [
+        {
+          "type": "object",
+          "properties": {
+            "loc": {
+              "type": "array",
+              "items": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "string"
+                }
+              ]
+            },
+            "msg": {
+              "type": "string"
+            },
+            "type": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "loc",
+            "msg",
+            "type"
+          ]
+        }
+      ]
+    }
+  },
+  "required": [
+    "detail"
+  ]
+}
+
+pm.test('Schema is valid', function() {
+pm.response.to.have.jsonSchema(schema);
+});
+
+// GET {{baseUrl}}/api/companies?status=1 | invalid status 
 
 pm.test("Status code is 422", function () {
     pm.response.to.have.status(422);
