@@ -143,3 +143,60 @@ pm.test("Verify status BANKRUPT", function(){
     pm.expect(company.company_status).to.be.eql("BANKRUPT");
     }
 });
+
+<h4>// GET {{baseUrl}}/api/companies?status=1 | invalid query params status = integer</h4>
+
+pm.test("Status code is 422", function () {
+    pm.response.to.have.status(422);
+});
+
+pm.test("Status code name has string", () => {
+  pm.response.to.have.status("Unprocessable Entity");
+});
+
+
+let schema =  {
+  
+  "type": "object",
+  "properties": {
+    "detail": {
+      "type": "array",
+      "items": [
+        {
+          "type": "object",
+          "properties": {
+            "loc": {
+              "type": "array",
+              "items": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "string"
+                }
+              ]
+            },
+            "msg": {
+              "type": "string"
+            },
+            "type": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "loc",
+            "msg",
+            "type"
+          ]
+        }
+      ]
+    }
+  },
+  "required": [
+    "detail"
+  ]
+}
+
+pm.test('Schema is valid', function() {
+pm.response.to.have.jsonSchema(schema);
+});
