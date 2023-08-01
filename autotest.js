@@ -124,6 +124,22 @@ pm.expect(pm.response.headers.get('Connection')).to.eql('keep-alive')
 
 pm.test("Verify status ACTIVE", function(){
     for(let company of pm.response.json().data){
-        pm.expect(company.company_status).to.be.eql("ACTIVE");
+    pm.expect(company.company_status).to.be.eql("ACTIVE");
+    }
+});
+
+// GET {{baseUrl}}/api/companies?status=CLOSED
+
+pm.test("Verify status CLOSED", function(){
+    for(let company of pm.response.json().data){
+    pm.expect(company.company_status).to.be.eql("CLOSED");
+    }
+});
+
+// GET {{baseUrl}}/api/companies?status=BANKRUPT
+
+pm.test("Verify status BANKRUPT", function(){
+    for(let company of pm.response.json().data){
+    pm.expect(company.company_status).to.be.eql("BANKRUPT");
     }
 });
