@@ -144,7 +144,7 @@ pm.test("Verify status BANKRUPT", function(){
     }
 });
 
-**GET {{baseUrl}}/api/companies?status=1 | invalid query params status = integer**
+// GET {{baseUrl}}/api/companies?status=1 | invalid query params status = integer
 
 pm.test("Status code is 422", function () {
     pm.response.to.have.status(422);
@@ -153,7 +153,6 @@ pm.test("Status code is 422", function () {
 pm.test("Status code name has string", () => {
   pm.response.to.have.status("Unprocessable Entity");
 });
-
 
 let schema =  {
   
