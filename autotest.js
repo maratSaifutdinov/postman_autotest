@@ -401,3 +401,155 @@ pm.test("Status code name has string", () => {
 pm.test("Response time is less than 500ms", function () {
     pm.expect(pm.response.responseTime).to.be.below(500);
 });
+
+// GET {{baseUrl}}/api/users/?limit=10&offset=5
+
+pm.test("Status code is 201", function () {
+    pm.response.to.have.status(200);
+});
+
+pm.test("Status code name has string", () => {
+  pm.response.to.have.status("OK");
+});
+
+pm.test("Response time is less than 500ms", function () {
+    pm.expect(pm.response.responseTime).to.be.below(500);
+});
+
+let schema =
+{
+  "type": "object",
+  "properties": {
+    "meta": {
+      "type": "object",
+      "properties": {
+        "limit": {
+          "type": "integer"
+        },
+        "offset": {
+          "type": "integer"
+        },
+        "total": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "limit",
+        "offset",
+        "total"
+      ]
+    },
+    "data": {
+      "type": "array",
+      "items": [
+        {
+          "type": "object",
+          "properties": {
+            "first_name": {
+              "type": "string"
+            },
+            "last_name": {
+              "type": "string"
+            },
+            "company_id": {
+              "type": "null"
+            },
+            "user_id": {
+              "type": "integer"
+            }
+          },
+          "required": [
+            "first_name",
+            "last_name",
+            "company_id",
+            "user_id"
+          ]
+        }
+      ]
+    }
+  },
+  "required": [
+    "meta",
+    "data"
+  ]
+}
+
+pm.test('Schema is valid', function() {
+pm.response.to.have.jsonSchema(schema);
+});
+
+pm.test("required keys", function() {
+    pm.expect(pm.response.json()).to.have.any.keys("meta", "data")
+});
+
+let DataJson = pm.response.json().data;
+
+pm.test("Length of JSON with default limit", function () {
+    let countLenData = Object.keys(DataJson).length;
+    pm.expect(countLenData).to.eql(10);
+});
+
+pm.test("Verify offset", function () {
+    pm.expect(DataJson[0].user_id).to.eql(5);
+});
+
+pm.test("Headers are valid", function () {
+    pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json');
+    pm.expect(pm.response.headers.get('Connection')).to.eql('keep-alive');
+});
+
+// GET {{baseUrl}}/api/users/abc | invalid id
+
+pm.test("Status code is 422", function () {
+    pm.response.to.have.status(422);
+});
+
+pm.test("Status code name has string", () => {
+  pm.response.to.have.status("Unprocessable Entity");
+});
+
+let schema =  {
+  
+  "type": "object",
+  "properties": {
+    "detail": {
+      "type": "array",
+      "items": [
+        {
+          "type": "object",
+          "properties": {
+            "loc": {
+              "type": "array",
+              "items": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "string"
+                }
+              ]
+            },
+            "msg": {
+              "type": "string"
+            },
+            "type": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "loc",
+            "msg",
+            "type"
+          ]
+        }
+      ]
+    }
+  },
+  "required": [
+    "detail"
+  ]
+}
+
+pm.test('Schema is valid', function() {
+pm.response.to.have.jsonSchema(schema);
+});
