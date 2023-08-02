@@ -353,3 +353,51 @@ let schema = {
 pm.test('Schema is valid', function() {
 pm.response.to.have.jsonSchema(schema);
 });
+
+// POST {{baseUrl}}/api/users/
+
+pm.collectionVariables.set("user_id", pm.response.json().user_id);
+pm.collectionVariables.set("first_name", pm.response.json().first_name);
+pm.collectionVariables.set("last_name", pm.response.json().last_name);
+pm.collectionVariables.set("company_id", pm.response.json().company_id);
+
+let schema = {
+  "type": "object",
+  "properties": {
+    "first_name": {
+      "type": "string",
+      "enum": ["Игнат"]
+    },
+    "last_name": {
+      "type": "string",
+      "enum": ["Игнат"]
+    },
+    "company_id": {
+      "type": "integer",
+      "enum": [1]
+    },
+    "user_id": {
+      "type": "integer"
+    }
+  },
+  "required": [
+    "last_name",
+    "user_id"
+  ]
+}
+
+pm.test('Schema is valid', function() {
+pm.response.to.have.jsonSchema(schema);
+});
+
+pm.test("Status code is 201", function () {
+    pm.response.to.have.status(201);
+});
+
+pm.test("Status code name has string", () => {
+  pm.response.to.have.status("Created");
+});
+
+pm.test("Response time is less than 500ms", function () {
+    pm.expect(pm.response.responseTime).to.be.below(500);
+});
