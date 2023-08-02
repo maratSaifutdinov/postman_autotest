@@ -553,3 +553,39 @@ let schema =  {
 pm.test('Schema is valid', function() {
 pm.response.to.have.jsonSchema(schema);
 });
+
+// POST {{baseUrl}}/api/users/ | non-existent company
+
+pm.test("Status code is 404", function () {
+    pm.response.to.have.status(404);
+    pm.response.to.have.status("Not Found");
+});
+
+pm.test("Response time is less than 500ms", function () {
+    pm.expect(pm.response.responseTime).to.be.below(500);
+});
+
+let schema = {
+
+  "type": "object",
+  "properties": {
+    "detail": {
+      "type": "object",
+      "properties": {
+        "reason": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "reason"
+      ]
+    }
+  },
+  "required": [
+    "detail"
+  ]
+}
+
+pm.test('Schema is valid', function() {
+pm.response.to.have.jsonSchema(schema);
+});
