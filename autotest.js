@@ -497,6 +497,43 @@ pm.test("Headers are valid", function () {
     pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json');
     pm.expect(pm.response.headers.get('Connection')).to.eql('keep-alive');
 });
+// GET {{baseUrl}}/api/users/{{user_id}}
+
+let first_name = pm.collectionVariables.get("first_name");
+let last_name = pm.collectionVariables.get("last_name");
+let company_id = pm.collectionVariables.get("company_id");
+let user_id = pm.collectionVariables.get("user_id");
+
+let schema = {
+  "type": "object",
+  "properties": {
+    "first_name": {
+      "type": "string",
+      "enum": [  first_name ]
+    },
+    "last_name": {
+      "type": "string",
+      "enum": [  last_name ]
+    },
+    "company_id": {
+      "type": "integer",
+      "enum": [  company_id ]
+    },
+    "user_id": {
+      "type": "integer",
+      "enum": [  user_id ]
+    }
+  },
+  "required": [
+    "last_name",
+    "user_id"
+  ]
+}
+
+pm.test('Schema is valid', function() {
+pm.response.to.have.jsonSchema(schema);
+});
+
 
 // GET {{baseUrl}}/api/users/abc | invalid id
 
@@ -583,6 +620,65 @@ let schema = {
   },
   "required": [
     "detail"
+  ]
+}
+
+pm.test('Schema is valid', function() {
+pm.response.to.have.jsonSchema(schema);
+});
+
+// PUT {{baseUrl}}/api/users/{{user_id}}
+
+// Pre-request script:
+
+pm.collectionVariables.set("first_name", "Victor");
+pm.collectionVariables.set("last_name", "Semenov");
+pm.collectionVariables.set("company_id", 3);
+
+// Tests:
+
+let first_name = pm.collectionVariables.get("first_name");
+let last_name = pm.collectionVariables.get("last_name");
+let company_id = pm.collectionVariables.get("company_id");
+let user_id = pm.collectionVariables.get("user_id");
+
+pm.test("Status code is 201", function () {
+    pm.response.to.have.status(200);
+    pm.response.to.have.status("OK");
+});
+
+pm.test("Response time is less than 500ms", function () {
+    pm.expect(pm.response.responseTime).to.be.below(500);
+});
+
+pm.test("Headers are valid", function () {
+    pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json');
+    pm.expect(pm.response.headers.get('Connection')).to.eql('keep-alive');
+});
+
+let schema = {
+  "type": "object",
+  "properties": {
+    "first_name": {
+      "type": "string",
+      "enum": [  first_name ]
+    },
+    "last_name": {
+      "type": "string",
+      "enum": [  last_name ]
+    },
+    "company_id": {
+      "type": "integer",
+      "enum": [  company_id ]
+    },
+    "user_id": {
+      "type": "integer",
+      "enum": [ user_id ]
+    }
+  },
+  "required": [
+    "last_name",
+    "user_id"
   ]
 }
 
