@@ -213,6 +213,15 @@ pm.test("Response time is less than 500ms", function () {
     pm.expect(pm.response.responseTime).to.be.below(500);
 });
 
+pm.test("Response when correct Accept-languege", function() {
+    pm.expect(pm.response.json()).to.have.any.keys("description", "description_lang")
+});
+
+if(pm.response.json().description_lang){
+    pm.test("description_lang === EN", function() {
+        pm.expect(pm.response.json().description_lang[0].translation_lang).to.eql("EN")}
+    )};
+
 pm.test("Headers is valid", function() {
 pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json');
 pm.expect(pm.response.headers.get('Connection')).to.eql('keep-alive')
@@ -298,6 +307,41 @@ let schema = {
             "type"
           ]
         }
+      ]
+    }
+  },
+  "required": [
+    "detail"
+  ]
+}
+
+pm.test('Schema is valid', function() {
+pm.response.to.have.jsonSchema(schema);
+});
+
+// GET {{baseUrl}}/api/companies/123 | несуществующий ID
+
+pm.test("Status code is 404", function () {
+    pm.response.to.have.status(404);
+});
+
+pm.test("Status code name has string", () => {
+  pm.response.to.have.status("Not Found");
+});
+
+let schema = {
+  
+  "type": "object",
+  "properties": {
+    "detail": {
+      "type": "object",
+      "properties": {
+        "reason": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "reason"
       ]
     }
   },
