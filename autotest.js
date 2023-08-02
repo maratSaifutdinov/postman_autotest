@@ -685,3 +685,34 @@ let schema = {
 pm.test('Schema is valid', function() {
 pm.response.to.have.jsonSchema(schema);
 });
+
+// PUT {{baseUrl}}/api/users/1000000 | non-existent user
+
+pm.test("Status code is 404", function () {
+    pm.response.to.have.status(404);
+    pm.response.to.have.status("Not Found");
+});
+
+let schema =
+{
+  "type": "object",
+  "properties": {
+    "detail": {
+      "type": "object",
+      "properties": {
+        "reason": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "reason"
+      ]
+    }
+  },
+  "required": [
+    "detail"
+  ]
+}
+pm.test('Schema is valid', function() {
+pm.response.to.have.jsonSchema(schema);
+});
