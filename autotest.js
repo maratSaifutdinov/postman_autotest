@@ -199,7 +199,62 @@ pm.test('Schema is valid', function() {
 pm.response.to.have.jsonSchema(schema);
 });
 
-// GET {{baseUrl}}/api/companies?status=1 | invalid status 
+// GET {{baseUrl}}/api/companies/1
+
+pm.test("Status code is 200", function () {
+    pm.response.to.have.status(200);
+});
+
+pm.test("Status code name has string", () => {
+  pm.response.to.have.status("OK");
+});
+
+pm.test("Response time is less than 500ms", function () {
+    pm.expect(pm.response.responseTime).to.be.below(500);
+});
+
+pm.test("Headers is valid", function() {
+pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json');
+pm.expect(pm.response.headers.get('Connection')).to.eql('keep-alive')
+pm.expect(pm.request.headers.get('Accept-Language')).to.eql('RU')
+});
+
+
+let schema =
+{
+
+  "type": "object",
+  "properties": {
+    "company_id": {
+      "type": "integer"
+    },
+    "company_name": {
+      "type": "string"
+    },
+    "company_address": {
+      "type": "string"
+    },
+    "company_status": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "company_id",
+    "company_name",
+    "company_address",
+    "company_status",
+    "description"
+  ]
+}
+
+pm.test('Schema is valid', function() {
+pm.response.to.have.jsonSchema(schema);
+});
+
+// GET {{baseUrl}}/api/companies/abc | invalid id 
 
 pm.test("Status code is 422", function () {
     pm.response.to.have.status(422);
@@ -209,8 +264,8 @@ pm.test("Status code name has string", () => {
   pm.response.to.have.status("Unprocessable Entity");
 });
 
-let schema =  {
-  
+let schema = {
+
   "type": "object",
   "properties": {
     "detail": {
