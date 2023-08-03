@@ -863,4 +863,62 @@ pm.test('Response body matches schema', function () {
     pm.response.to.have.jsonSchema(schema);
 });
 
+// GET {{baseUrl}}/api/issues/companies/1
+
+pm.test("Status code is 200", function () {
+    pm.response.to.have.status(200);
+});
+
+pm.test("Response time is less than 500ms", function () {
+    pm.expect(pm.response.responseTime).to.be.below(500);
+});
+
+pm.test("Headers is valid", function() {
+pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json');
+pm.expect(pm.response.headers.get('Connection')).to.eql('keep-alive')
+});
+
+let schema = 
+{
+    
+  "type": "object",
+  "properties": {
+    "company_id": {
+      "type": "integer"
+    },
+    "company_name": {
+      "type": "string"
+    },
+    "company_address": {
+      "type": "string"
+    },
+    "company_status": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "company_id",
+    "company_name",
+    "company_address",
+    "company_status",
+    "description"
+  ]
+
+}
+
+pm.test('Response body matches schema', function () {
+    pm.response.to.have.jsonSchema(schema);
+});
+
+pm.test("Response when correct Accept-languege", function() {
+    pm.expect(pm.response.json()).to.have.any.keys("description", "description_lang")
+});
+
+if(pm.response.json().description_lang){
+    pm.test("description_lang === EN", function() {
+        pm.expect(pm.response.json().description_lang[0].translation_lang).to.eql("EN")}
+    )};
 
