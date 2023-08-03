@@ -716,3 +716,59 @@ let schema =
 pm.test('Schema is valid', function() {
 pm.response.to.have.jsonSchema(schema);
 });
+
+// DELETE {{baseUrl}}/api/users/{{user_id}} 
+
+pm.test("Status code is 202", function () {
+    pm.response.to.have.status(202);
+    pm.response.to.have.status("Accepted");
+});
+
+pm.test("Response time is less than 500ms", function () {
+    pm.expect(pm.response.responseTime).to.be.below(500);
+});
+
+pm.test("Headers are valid", function () {
+    pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json');
+    pm.expect(pm.response.headers.get('Connection')).to.eql('keep-alive');
+});
+
+pm.test("Response body is object", function(){
+    pm.expect(pm.response.json()).to.be.a("object");
+});
+
+// DELETE {{baseUrl}}/api/users/{{user_id}} | non-existent user
+
+pm.test("Status code is 202", function () {
+    pm.response.to.have.status(404);
+    pm.response.to.have.status("Not Found");
+});
+
+pm.test("Response time is less than 500ms", function () {
+    pm.expect(pm.response.responseTime).to.be.below(500);
+});
+
+let schema = {
+  
+  "type": "object",
+  "properties": {
+    "detail": {
+      "type": "object",
+      "properties": {
+        "reason": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "reason"
+      ]
+    }
+  },
+  "required": [
+    "detail"
+  ]
+}
+
+pm.test('Schema is valid', function() {
+pm.response.to.have.jsonSchema(schema);
+});
