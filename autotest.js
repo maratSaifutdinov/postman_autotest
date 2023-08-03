@@ -922,3 +922,62 @@ if(pm.response.json().description_lang){
         pm.expect(pm.response.json().description_lang[0].translation_lang).to.eql("EN")}
     )};
 
+// POST {{baseUrl}}/api/issues/users 
+
+// Pre-request:
+
+pm.collectionVariables.set("first_name", "Alexey");
+pm.collectionVariables.set("last_name", "Samsonov");
+pm.collectionVariables.set("company_id", 3);
+
+// Tests:
+
+let first_name = pm.collectionVariables.get("first_name");
+let last_name = pm.collectionVariables.get("last_name");
+let company_id = pm.collectionVariables.get("company_id")
+
+ 
+pm.test("Response time below 500ms", function(){
+    pm.expect(pm.response.responseTime).to.be.below(500);
+});
+
+pm.test("Status code is success", function(){
+    pm.response.to.be.success;
+});
+
+pm.test("Status code is 201", function(){
+    pm.response.to.have.status(201);
+});
+
+pm.test("Header is valid", function(){
+    pm.expect(pm.response.headers.get('Connection')).to.eql('keep-alive');
+    pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json');
+});
+
+let schema = {
+  "type": "object",
+  "properties": {
+    "first_name": {
+      "type": "string",
+      "enum": [last_name]
+    },
+    "last_name": {
+      "type": "string",
+      "enum": [last_name]
+    },
+    "company_id": {
+      "type": "integer",
+      "enum": [company_id]
+    }
+  },
+  "required": [
+    "first_name",
+    "user_id"
+  ]
+};
+
+pm.test("Schema is valid", function(){
+    pm.response.to.have.jsonSchema(schema);
+});
+
+pm.collectionVariables.clear();
