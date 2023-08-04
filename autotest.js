@@ -270,12 +270,40 @@ let NonExistent = {
   ]
 }
 
+let MeResponse =
+{
+    "type": "object",
+    "properties": {
+        "token": {
+            "type": "string"
+        },
+        "user_name": {
+            "type": "string"
+        },
+        "email_address": {
+            "type": "string",
+            "format": "email"
+        },
+        "valid_till": {
+            "type": "string",
+            "format": "date-time"
+        }
+    },
+    "required": [
+        "token",
+        "user_name",
+        "email_address",
+        "valid_till"
+    ]
+}
+
 pm.environment.set("CompanyList", JSON.stringify(CompanyList));
 pm.environment.set("Company", JSON.stringify(Company));
 pm.environment.set("UsersList", JSON.stringify(UsersList));
 pm.environment.set("ResponseUser", JSON.stringify(ResponseUser));
 pm.environment.set("HTTPValidationError", JSON.stringify(HTTPValidationError));
 pm.environment.set("NonExistent", JSON.stringify(NonExistent));
+pm.environment.set("MeResponse", JSON.stringify(MeResponse));
 
 // GET {{baseUrl}}/api/companies
 
@@ -765,3 +793,55 @@ pm.test("Schema is valid", function(){
 });
 
 pm.collectionVariables.clear();
+
+// POST {{baseUrl}}/api/auth/authorize
+
+pm.test("Status code is 200", function () {
+    pm.response.to.have.status(200);
+});
+
+pm.test("Headers are valid", function () {
+    pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json');
+    pm.expect(pm.response.headers.get('Connection')).to.eql('keep-alive');
+});
+
+pm.environment.set("token", pm.response.json().token)
+
+pm.test("Token received", function(){
+    pm.expect(pm.response.json().token).to.be.a("string");
+});
+
+// POST {{baseUrl}}/api/auth/authorize | invalid login
+
+pm.test("Status code is 422", function () {
+    pm.response.to.have.status(422);
+    pm.response.to.have.status("Unprocessable Entity");
+});
+
+let schema = JSON.parse(pm.environment.get("HTTPValidationError"));
+
+pm.test('Schema is valid', function() {
+  pm.response.to.have.jsonSchema(schema);
+});
+
+pm.test("Headers are valid", function () {
+    pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json');
+    pm.expect(pm.response.headers.get('Connection')).to.eql('keep-alive');
+});
+
+// GET {{baseUrl}}/api/auth/me
+
+pm.test("Status code is 200", function () {
+    pm.response.to.have.status(200);
+});
+
+pm.test("Headers are valid", function () {
+    pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json');
+    pm.expect(pm.response.headers.get('Connection')).to.eql('keep-alive');
+});
+
+let schema = JSON.parse(pm.environment.get("MeResponse"));
+
+pm.test('Schema is valid', function () {
+  pm.response.to.have.jsonSchema(schema);
+});
