@@ -598,6 +598,16 @@ pm.test('Schema is valid', function() {
 pm.response.to.have.jsonSchema(schema);
 });
 
+let jsonData = pm.response.json();  
+
+pm.test("Verify enums", function(){
+    pm.expect(jsonData.first_name).to.be.eql(first_name);
+    pm.expect(jsonData.last_name).to.be.eql(last_name);
+    pm.expect(jsonData.company_id).to.be.eql(company_id);
+    pm.expect(jsonData.user_id).to.be.eql(user_id);
+    
+})
+
 // PUT {{baseUrl}}/api/users/1000000 | non-existent user
 
 pm.test("Status code is 404", function () {
