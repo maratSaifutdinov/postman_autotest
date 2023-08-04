@@ -361,7 +361,6 @@ pm.test("Verify status CLOSED", function(){
     pm.expect(company.company_status).to.be.eql("CLOSED");
     }
 });
-
 // GET {{baseUrl}}/api/companies?status=BANKRUPT
 
 pm.test("Verify status BANKRUPT", function(){
