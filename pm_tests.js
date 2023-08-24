@@ -5,7 +5,7 @@ pm.test("Status code is 200", function () {
 });
 
 pm.test("Status code name has string", () => {
-    pm.response.to.have.status("OK");
+    pm.response.to.have.status('OK');
 });
 
 pm.test("Response time is less than 500ms", function () {
@@ -13,7 +13,7 @@ pm.test("Response time is less than 500ms", function () {
 });
 
 pm.test("Request is made using HTTPS", function () {
-    pm.expect(pm.request.url.protocol).to.eql("https");
+    pm.expect(pm.request.url.protocol).to.eql('https');
 });
 
 pm.test("Headers are valid", function () {
@@ -22,13 +22,32 @@ pm.test("Headers are valid", function () {
 });
 
 pm.test('Test Cookie', function () {
-    pm.expect(pm.cookies.has("PHPSESSID")).to.be.true;
+    pm.expect(pm.cookies.has('PHPSESSID')).to.be.true;
 });
 
-let schema = JSON.parse(pm.environment.get("BasicInformation"));
+let schema = JSON.parse(pm.environment.get('BasicInformation'));
 
 pm.test('Schema is valid', function () {
   pm.response.to.have.jsonSchema(schema);
+});
+
+// GET {{http_url}}/api/{{api_version}}/product/{{id}} | Получение данных по незащищенному протоколу "HTTP"
+
+pm.test("Status code is 307", function () {
+    pm.response.to.have.status(307);
+});
+
+pm.test("Response time is less than 500ms", function () {
+    pm.expect(pm.response.responseTime).to.be.below(500);
+});
+
+pm.test("Headers is vaild", function() {
+pm.expect(pm.response.headers.get('Connection')).to.eql('keep-alive');
+pm.expect(pm.response.headers.get('Location')).to.eql('http://***********************');
+});
+
+pm.test("Request by http", function() {
+pm.expect(pm.request.url.protocol).to.eql("http")
 });
 
 // GET {{base_url}}/api/{{api_version}}/product/{{Non_existent_ID}}  | Получение информации о товаре по несуществующему ID
@@ -38,7 +57,7 @@ pm.test("Status code is 404", function () {
 });
 
 pm.test("Status code name has string", () => {
-    pm.response.to.have.status("Not Found");
+    pm.response.to.have.status('Not Found');
 });
 
 pm.test("Response time is less than 500ms", function () {
@@ -51,10 +70,10 @@ pm.test("Headers are valid", function () {
 });
 
 pm.test('Test Cookie', function () {
-    pm.expect(pm.cookies.has("PHPSESSID")).to.be.true;
+    pm.expect(pm.cookies.has('PHPSESSID')).to.be.true;
 });
 
-let schema = JSON.parse(pm.environment.get("notFound"));
+let schema = JSON.parse(pm.environment.get('notFound'));
 
 pm.test('Schema is valid', function () {
     pm.response.to.have.jsonSchema(schema);
