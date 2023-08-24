@@ -22,7 +22,7 @@ pm.test("Headers are valid", function () {
 });
 
 pm.test('Test Cookie', function () {
-    pm.expect(pm.cookies.get("PHPSESSID"));
+    pm.expect(pm.cookies.has("PHPSESSID")).to.be.true;
 });
 
 let schema = JSON.parse(pm.environment.get("BasicInformation"));
