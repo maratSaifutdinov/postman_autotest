@@ -1,3 +1,23 @@
+// Authentication/Registration
+// POST {{base_url}}/api/{{api_version}}/auth/by-phone | Номер телефона не подтвержден
+
+pm.test("Status code is 400", function () {
+    pm.response.to.have.status(400);
+});
+
+pm.test("Headers are valid", function () {
+    pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json');
+    pm.expect(pm.response.headers.get('Connection')).to.eql('keep-alive');
+    pm.expect(pm.response.headers.get('Cache-Control')).to.eql('no-store, no-cache, must-revalidate');
+    pm.expect(pm.response.headers.get('Access-Control-Allow-Methods')).to.eql('POST,OPTIONS');
+});
+
+let schema = JSON.parse(pm.environment.get("notconfirmedPhoneNumber"));
+
+pm.test('Schema is valid', function () {
+  pm.response.to.have.jsonSchema(schema);
+});
+
 // GET {{base_url}}/api/{{api_version}}/product/{{id}} | Получение информации о товаре по ID
  
 pm.test("Status code is 200", function () {
