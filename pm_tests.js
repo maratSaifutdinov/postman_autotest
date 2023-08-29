@@ -1,4 +1,27 @@
 // Authentication/Registration
+
+// POST {{base_url}}/api/{{api_version}}/auth/by-phone | Аутентификация с помощью номера телефона
+
+pm.test("Status code is 204", function () {
+    pm.response.to.have.status(204);
+});
+
+pm.test('Test Cookie', function () {
+    pm.expect(pm.cookies.has("authorization")).to.be.true;
+});
+
+pm.test("Headers are valid", function () {
+    pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json; charset=utf-8');
+    pm.expect(pm.response.headers.get('Connection')).to.eql('keep-alive');
+    pm.expect(pm.response.headers.get('Cache-Control')).to.eql('no-store, no-cache, must-revalidate');
+    pm.expect(pm.response.headers.get('Access-Control-Allow-Methods')).to.eql('POST,OPTIONS');
+
+});
+
+pm.test("Token received", function () {
+    pm.expect(pm.response.headers.get('Token')).to.be.a("string");
+});
+
 // POST {{base_url}}/api/{{api_version}}/auth/by-phone | Номер телефона не подтвержден
 
 pm.test("Status code is 400", function () {
