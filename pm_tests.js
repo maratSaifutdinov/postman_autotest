@@ -35,6 +35,10 @@ pm.test("Headers are valid", function () {
     pm.expect(pm.response.headers.get('Access-Control-Allow-Methods')).to.eql('POST,OPTIONS');
 });
 
+pm.test("Token header is not set in the response headers", function () {
+    pm.expect(pm.response.headers.get('Token')).to.not.exist;
+});
+
 let schema = JSON.parse(pm.environment.get("notconfirmedPhoneNumber"));
 
 pm.test('Schema is valid', function () {
