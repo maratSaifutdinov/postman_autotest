@@ -83,6 +83,11 @@ pm.test("Expected ID", function () {
     pm.expect(jsonData.data.product.id).to.eql(******);
 });
 
+pm.test("Expected Type", function () {
+    const jsonData = pm.response.json();
+    pm.expect(jsonData.data.product.type).to.eql('*******');
+});
+
 // GET {{http_url}}/api/{{api_version}}/product/{{id}} | Получение данных по незащищенному протоколу "HTTP"
 
 pm.test("Status code is 307", function () {
