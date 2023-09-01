@@ -164,6 +164,11 @@ pm.test('Schema is valid', function () {
     pm.response.to.have.jsonSchema(schema);
 });
 
+pm.test("Expected Article", function () {
+    const jsonData = pm.response.json();
+    pm.expect(jsonData.data.product.article).to.eql('*********');
+});
+
 // GET {{base_url}}/api/{{api_version}}/product/article/{{nonExistentArticle}} | Получение информации о товаре по несуществующему артикулу
 
 pm.test("Status code is 404", function () {
