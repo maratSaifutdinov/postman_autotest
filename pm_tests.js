@@ -78,6 +78,11 @@ pm.test('Schema is valid', function () {
   pm.response.to.have.jsonSchema(schema);
 });
 
+pm.test("Expected ID", function () {
+    const jsonData = pm.response.json();
+    pm.expect(jsonData.data.product.id).to.eql(******);
+});
+
 // GET {{http_url}}/api/{{api_version}}/product/{{id}} | Получение данных по незащищенному протоколу "HTTP"
 
 pm.test("Status code is 307", function () {
